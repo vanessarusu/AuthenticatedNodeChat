@@ -1,0 +1,14 @@
+
+
+MMED 6003 Node Chat Homework (5%)
+
+Add to the in-class build so that each chat window will allow a user to register a different user name, and that user name will appear in the chat window for AT LEAST connection and disconnection:
+
+rhaaf connected
+
+bjones connected
+
+…etc.
+
+
+DUE: In-class January 26th, 2016

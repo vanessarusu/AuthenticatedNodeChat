@@ -1,0 +1,203 @@
+@font-face {
+    font-family: 'trashhandregular';
+    src: url('TrashHand-webfont.eot');
+    src: url('TrashHand-webfont.eot?#iefix') format('embedded-opentype'),
+         url('TrashHand-webfont.woff') format('woff'),
+         url('TrashHand-webfont.ttf') format('truetype'),
+         url('TrashHand-webfont.svg#trashhandregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+/*------------------------------------------------------------------------------*/
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box; 
+	transition: all 0.3s ease-in;
+}
+
+body {
+	font-family: 'montserrat', Helvetica, sans-serif;
+	background-color: #363639;
+	min-height: 100vh;
+	background-image: url(../images/circle-bg.png);
+	background-position: cover;
+}
+
+form {
+	width: 100%;
+	margin: 0;
+}
+
+form input {
+	border: 0;
+	padding: 15px 0;
+	text-indent: 10px;
+	width: 100%;
+	margin-top: 10px;
+}
+
+form button {
+	width: 100%;
+	background: #ba3344;
+	border: none;
+	padding: 10px 0;
+	color: #fff;
+}
+
+
+.hidden {
+	display: none;
+}
+
+.show {
+	display: block;
+}
+
+#messages {
+	list-style-type: none;
+    margin: 0; 
+    padding: 0;
+    max-height: 250px;
+    overflow-y:	auto;
+}
+#messages li {
+    padding: 5px 10px;
+    color: #fff;
+}
+#messages li:nth-child(odd) {
+	background: rgba(0,0,0,0.2);
+}
+
+#messages li .name {
+	color:#fbac2b;
+}
+
+#messages li img, #activeUsersList li img {
+	border-radius: 50%;
+	margin-right: 10px;
+	width: 40px;
+	height: 40px;
+}
+
+#header {
+	width: 100%;
+	background-color: #feeac9;
+}
+
+#logo {
+	margin: 0 8% 0 2%;
+	float: left;
+	width: 40%;
+	position: fixed;
+	bottom: 0;
+}
+#logo::after {
+	content: '';
+	display: block;
+	clear: both;
+	background-color: red;
+}
+
+#logo img {
+	width: 100%;
+	max-width: 800px;
+}
+
+#loginWrapper {
+	float: right;
+	width: 50%;
+	margin: 100px 50px 0 50px;
+	/*margin: 100px auto 0 auto;*/
+	text-align: center;
+}
+
+#loginWrapper a {
+	text-decoration: none;
+	color: #fff;
+}
+
+.facebook-icon {
+	background-color: #3B5998;
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+}
+
+#signIn, #chatSection {
+	float: right;
+	clear: both;
+	margin: 0 2.5%;
+	width: 45%;
+}
+
+#signIn {
+	margin-top: 5%;
+}
+
+#signIn h1, .loginFacebookHeader {
+	font-family: 'trashhandregular', Helvetica, sans-serif;
+	color: #fff;
+	font-size: 60px;
+	margin-bottom: 20px;
+	line-height: 80px;
+	border-bottom: 2px solid #fff;
+	font-weight: normal;
+}
+p, button, #users p {
+	margin: 10px 0;
+	font-size: 20px;
+	color: #fff;
+}
+
+button {
+	font-family: 'montserrat',Helvetica, sans-serif;
+}
+button:hover {
+	background-color: #13b589;
+}
+
+#activeUsersList {
+	padding-bottom: 10px;
+	list-style-type: none;
+}
+#activeUsersList a {
+	text-decoration: none;
+}
+
+#activeUsersList a li:hover {
+	color: #13b589;
+}
+
+.displayWhoIsTyping {
+	border-top: 2px dotted #13b589;
+	color: #13b589;
+	font-size: 20px;
+	padding-top: 15px;
+	line-height: 50px;
+	font-family: 'trashhandregular', Helvetica, sans-serif;
+}
+
+#chatSection h1 {
+	margin: 20px 0;
+	font-family: 'trashhandregular', Helvetica, sans-serif;
+	color: #13b589;
+	font-weight: normal;
+	font-size: 60px;
+    line-height: 80px;
+    border-bottom: 2px solid #13b589;
+}
+
+.activeUsers {
+	list-style-position: inside;
+	color: #fff;
+}
+.textHint, .messageHint {
+	color: #ba3344;
+}
+.connectionCheck {
+	color: #ba3344;
+}

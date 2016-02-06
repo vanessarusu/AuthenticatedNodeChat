@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO Chat</title>
+      <link rel="stylesheet" href="css/styles.css" />
+      <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <section id="wrapper">
+      <figure id="logo"><img src="images/yada-logo.png"></figure>
+      <div id="signIn">
+        <h1 class="chatPrompt">Welcome to Chat!</h1>
+        <p class="textHint hidden"></p>
+        <div id="users">
+          <p>Users Online:</p>
+          <ul id="activeUsersList"></ul>        
+        </div>
+      </div>
+      <section id="chatSection" >
+        <h1>Messages:</h1>
+        <ul id="messages"></ul>
+
+        <form id="chatform">
+          <input id="mess" class="typing" autocomplete="off" />
+          <button id="sendbtn">Send</button>
+          <span class="displayWhoIsTyping"></span>
+        </form>
+        <p class="messageHint hidden"></p>
+      </section>
+    </section>
+    <script src="https://cdn.socket.io/socket.io-1.4.4.js"></script>
+    <script>
+      (function(){
+        
+        // this function removes the weird hashing thing that comes back on the url from the facebook authentication
+        // but it refreshes the window to do so(makes a second connection event);
+
+        // if (window.location.href.indexOf('#_=_') > 0) {
+        //   window.location = window.location.href.replace(/#.*/, '');
+        // }
+
+        // VARIABLES -----------------------------------------------------------------------------
+
+        var socket = io();
+
+
+        var username = null;
+        var typingCheck = false;
+        var displayWhoIsTyping = document.querySelector('.displayWhoIsTyping');
+        
+
+        var form = document.querySelector('#chatform');
+        var list = document.querySelector('#messages');
+        var input = document.querySelector('#mess');
+        var signInPrompt = document.querySelector('.signInPrompt');
+        var chatPrompt = document.querySelector('.chatPrompt');
+        var typing = document.querySelector('.typing');
+        var activeUsersList = document.querySelector('#activeUsersList');
+        var users = document.querySelector('#users');
+        var messages = document.querySelector('#messages');
+        var chatSection = document.querySelector('#chatSection');
+        var textHint = document.querySelector('.textHint');
+        var messageHint = document.querySelector('.messageHint');
+
+
+        // FUNCTIONS -----------------------------------------------------------------------------
+
+
+
+        // keeps the chat message div scrolled to the bottom
+
+        function updateScroll(){
+          messages.scrollTop = messages.scrollHeight;
+        }
+
+        // emits a chat message event, passes the value of the input field (checks for null)
+        // clears the value out of the input field
+        // emits a not typing event, to track user has finished typing
+
+
+        function sendMsg(e) {
+          e.preventDefault(); 
+
+          if(input.value.length===0){
+            // messageHint.classList.remove('hidden');
+            messageHint.innerHTML='Please enter a message!';
+          }
+
+          else {
+            socket.emit('chat message', input.value);
+            input.value = '';
+            // remove them from the array of people typing
+            socket.emit('not typing');
+            updateScroll();
+            // messageHint.classList.add('hidden');
+            typingCheck = false;
+            return false;
+          }
+        }
+
+
+        // gets called on every keyup in the message field
+        // if user is not typing, emit an event that adds their name to the array of people currently typing
+        // if there is input in the message field, emit an event that the user is typing
+        // otherwise emit an event that the user is not typing (they deleted the message without sending)
+        function isTyping() {
+          if(!typingCheck){
+            socket.emit('send username to array');
+          }
+
+          if(typing.value.length >=1){
+            socket.emit('user typing');
+            typingCheck = true;
+          }
+
+          else {
+            socket.emit('not typing');
+            typingCheck = false;
+          }
+        }
+
+        // SOCKET IO EVENTS -----------------------------------------------------------------------------
+
+
+        // take the parameter of the array of people currently typing
+        // if nothing in the array empty the inner html
+        // if there are less than 4 people typing list the names
+        // otherwise display number of people typing
+
+        socket.on('user typing', function(whoIsTyping) {
+
+          var index = whoIsTyping.indexOf(username);
+          if(index !=-1) {
+            whoIsTyping.splice(index, 1);
+          }
+
+          if (whoIsTyping.length ==0) {
+            displayWhoIsTyping.innerHTML='';
+          }
+          else if(whoIsTyping.length===1) {
+            console.log(whoIsTyping.length);
+            displayWhoIsTyping.innerHTML = whoIsTyping + ' is typing';
+          }
+          else if(whoIsTyping.length>1 && whoIsTyping.length <=3) {
+            console.log(whoIsTyping.length);
+            displayWhoIsTyping.innerHTML = whoIsTyping + ' are typing';
+          }
+          else {
+           displayWhoIsTyping.innerHTML = whoIsTyping.length + ' people are typing';
+          }
+        });
+
+
+socket.on('welcome message', function(username){
+  chatPrompt.innerHTML = 'Welcome, '+username+'';
+})
+
+        // takes in a parameter with the message content
+        // displays the parameter inside of an li, scrolls the div to bottom
+
+        socket.on('chat message', function(msg){
+          list.innerHTML += '<li>'+msg+'</li>';
+          updateScroll();
+        });
+
+        // takes in a parameter
+        // displays the parameter inside of an li, scrolls the div to bottom
+
+        socket.on('disconnect', function(msg){
+         list.innerHTML += '<li>'+msg+'</li>';
+          io.emit('update active users');
+          updateScroll();
+        });
+
+        // takes in active users array, sorts them
+        // empties the dom element
+        // repopulates the dom element with li's of the active users
+
+        socket.on('update active users', function(activeUsers){
+          activeUsers.sort();
+          activeUsersList.innerHTML = '';
+          for(var i=0; i<activeUsers.length; i++){
+            activeUsersList.innerHTML += '<a href="'+activeUsers[i].link+'" target="blank"><li class="activeUsers">'+activeUsers[i].photo+activeUsers[i].username+'</li></a>';
+          }
+        });
+
+
+        // EVENT LISTENERS -----------------------------------------------------------------------------
+
+        form.addEventListener("submit", sendMsg, false);
+        typing.addEventListener('keyup', isTyping, false);
+
+      })();
+
+    </script>
+  </body>
+</html>
